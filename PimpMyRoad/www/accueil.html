@@ -1,0 +1,368 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <style>
+        #listeBtn button {
+            margin-bottom: 1em;
+            width: 3em;
+        }
+    </style>
+    <nav class="navbar navbar-default" style="margin: 0; position:fixed; top:0; right:0; left:0; z-index:1000;">
+        <div class="container-fluid">
+            <div class="navbar-header" style="text-align: center;">
+                <img alt="Brand" src="images/logo.png" style='width: auto; height:5em;'>
+            </div>
+            <div style="right: 15px; position: fixed; top:23px;">
+                <a id="deco"> <i class="fa fa-power-off fa-2x" aria-hidden="true"></i> </a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="listeBtn" style="margin-top: 8em; margin-left: 1em; position:fixed; z-index:999;">
+        <button type="button" class="btn btn-primary" id="btnTrajet" style="" data-toggle="modal" data-target="#modalTrajet"><i class="fa fa-car" aria-hidden="true"></i></button><br />
+        <button type="button" class="btn btn-warning" id="btnInfo" style="" data-toggle="modal" data-target="#modalInfo"><i class="fa fa-list-ol" aria-hidden="true"></i></button><br />
+        <button type="button" class="btn btn-success" id="btnSpotify" style="" data-toggle="modal" data-target="#modalSpotify"><i class="fa fa-spotify" aria-hidden="true"></i></button><br />
+        <button type="button" class="btn btn-info" id="btnMeteo" style="" data-toggle="modal" data-target="#modalMeteo"><i class="fa fa-cloud" aria-hidden="true"></i></button>
+    </div>
+
+    <div id="gmap" style="height: 100vh; width: 100%; z-index:1;"></div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalTrajet" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    <center><i class="fa fa-car fa-2x" aria-hidden="true" style="color: #50EF94;"></i><h4 class="modal-title" id="myModalLabel" style="font-weight: bold;">Mes Trajets</h4></center>
+                </div>
+                <div class="modal-body text-center" id="zoneTrajet">
+                    <div class="list-group" id="listeTrajet"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnTrClo">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    <center><i class="fa fa-car fa-2x" aria-hidden="true" style="color: #50EF94;"></i><h4 class="modal-title" id="myModalLabel" style="font-weight: bold;">Details du Trajet</h4></center>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group" id="details"></ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalSpotify" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    <center><i class="fa fa-spotify fa-2x" aria-hidden="true" style="color: #50EF94;"></i><h4 class="modal-title" id="myModalLabel" style="font-weight: bold;">Spotify</h4></center>
+                </div>
+                <div class="modal-body">
+                    <!--<button id="login">69</button>-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalMeteo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    <center><i class="fa fa-cloud fa-2x" aria-hidden="true" style="color: #50EF94;"></i><h4 class="modal-title" id="myModalLabel" style="font-weight: bold;">Météo</h4></center>
+                </div>
+                <div class="modal-body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" data-main="scripts/startup" src="lib/require.2.1.8.js" async></script>
+    <script type="text/javascript" src="scripts/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#deco').click(function () {
+                window.close();
+            })
+
+            initEvents();
+
+            var status = sessionStorage.getItem("trajet")
+            console.log(status)
+            if (status == "0") {
+                $('#btnInfo').css("display", "none");
+            } else {
+                $('#btnInfo').css("display", "initial");
+                var tabDetail = JSON.parse(sessionStorage.getItem('detail'));
+                for (var k = 0; k < tabDetail.length; k++) {
+                    $('#details').append('<li class="list-group-item">' + tabDetail[k] + '</li>');
+                }
+            }
+
+            $.ajax({
+                url: sessionStorage.getItem("url") + 'journey/list',
+                type: 'GET',
+                beforeSend: function (xhr) {
+                    /* Authorization header */
+                    xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem("token"));
+                    $('#zoneTrajet').append('<i class="fa fa-spinner fa-spin fa-3x fa-fw" id="loader"></i>'); 
+                },
+                success: function (data) {
+                    console.log(JSON.stringify(data))
+                    var nbTrajet = data.list_journey.length;
+
+                    var trajet = {
+                        id: "",
+                        start: "",
+                        end: ""
+                    }
+                    var tabTrajet = [];
+
+                    for (var i = 0; i < nbTrajet; i++) {
+                        //$('#listeTrajet').append('<button type="button" class="list-group-item">' + data.list_journey[i].start + ' <span class="glyphicon glyphicon-search" aria-hidden="true"></span> ' + data.list_journey[i].end + '</button>')
+                        trajet = {
+                            id: data.list_journey[i].id,
+                            start: data.list_journey[i].start,
+                            end: data.list_journey[i].end
+                        }
+                        tabTrajet.push(trajet);
+                        sessionStorage.setItem("tabtrajet", JSON.stringify(tabTrajet))
+                        $('#listeTrajet').append('<div class="row" style="margin-bottom: 1em;"><div class="col-xs-8" style="text-align: center; padding-top: 7px; font-weight: bold;">' + data.list_journey[i].start + ' > ' + data.list_journey[i].end + '</div><div class="col-xs-2" style="width: auto; padding: 0;"><button type="button" class="btn btn-danger delete" data-id="' + data.list_journey[i].id + '"><i class="fa fa-trash" aria-hidden="true"></i></button></div><div class="col-xs-2" style="width: auto;"><button type="button" class="btn btn-info selectTrajet" data-id="' + data.list_journey[i].id + '"><i class="fa fa-road" aria-hidden="true"></i></button></div></div>')
+                        $('#loader').remove()
+                        console.log("1 trajet")
+                    }
+
+                    initEvents();
+                },
+
+                error: function (resultat, statut, erreur) {
+                    console.log("Erreur !" + resultat);
+                }
+            });
+
+            var onSuccess = function (position) {
+                sessionStorage.setItem("lat", position.coords.latitude)
+                sessionStorage.setItem("long", position.coords.longitude)
+            };
+
+            function onError(error) {
+                console.log('code: ' + error.code + '\n' +
+                    'message: ' + error.message + '\n');
+            }
+
+            navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+            $.ajax({
+                url: sessionStorage.getItem("url") + 'meteo/',
+                type: 'POST',
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    /* Authorization header */
+                    xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem("token"));
+                },
+                headers: {
+                    "Authorization": "Bearer " + sessionStorage.getItem("token")
+                },
+                data: {
+                    lat: "48.833209", lon: "2.235980"
+                },
+                success: function (data) {
+                    console.log(JSON.stringify(data))
+                },
+
+                error: function (resultat, statut, erreur) {
+                    console.log("Erreur !" + erreur);
+                }
+            });  
+        })
+
+        function initEvents() {
+            $(".delete").on('click', function () { // Supprimer trajet
+                var id = $(this).data('id');
+                console.log(id)
+                var r = confirm("Êtes-vous sûr de vouloir supprimer ce trajet ?");
+                if (r == true) {
+                    $.ajax({
+                        url: sessionStorage.getItem("url") + 'journey/delete/' + id,
+                        type: 'DELETE',
+                        beforeSend: function (xhr) {
+                            /* Authorization header */
+                            xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem("token"));
+                        },
+                        headers: {
+                            "Authorization": "Bearer " + sessionStorage.getItem("token")
+                        },
+                        success: function (data) {
+                            console.log(JSON.stringify(data))
+                        },
+
+                        error: function (resultat, statut, erreur) {
+                            console.log("Erreur !" + erreur);
+                        }
+                    });
+                } 
+            })
+
+            $(".selectTrajet").on('click', function () { // Supprimer trajet
+                var id = $(this).data('id');
+                console.log(id)
+                
+                $.ajax({
+                    url: sessionStorage.getItem("url") + 'journey/show/' + id,
+                    type: 'GET',
+                    beforeSend: function (xhr) {
+                        /* Authorization header */
+                        xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem("token"));
+                        $('#listeTrajet').css('display', 'none');
+                        $('#btnTrClo').css('display', 'none');
+                        $('#zoneTrajet').append('<i class="fa fa-spinner fa-spin fa-3x fa-fw" id="loader"></i>'); 
+                    },
+                    headers: {
+                        "Authorization": "Bearer " + sessionStorage.getItem("token")
+                    },
+                    success: function (data) {
+                        console.log(data.datas)
+                        sessionStorage.setItem("trajet", "1");
+                        sessionStorage.setItem('start', data.info.start);
+                        sessionStorage.setItem('end', data.info.end);
+                        var tabInstruction = [];
+                        for (var j = 0; j < data.datas.routes[0].legs[0].steps.length; j++) {
+                            tabInstruction.push(data.datas.routes[0].legs[0].steps[j].html_instructions)
+                        }
+                        sessionStorage.setItem('detail', JSON.stringify(tabInstruction));
+
+                        $('#listeTrajet').css('display', 'initial');
+                        $('#btnTrClo').css('display', 'initial');
+                        $('#loader').remove();
+
+                        location.reload();
+                    },
+                    error: function (resultat, statut, erreur) {
+                        console.log("Erreur !" + erreur);
+                    }
+                });
+            })
+        }     
+        
+        function initMap() {
+            var directionsService = new google.maps.DirectionsService;
+            var directionsDisplay = new google.maps.DirectionsRenderer;
+            var map = new google.maps.Map(document.getElementById('gmap'), {
+                zoom: 5,
+                center: { lat: 46.52863469527167, lng: 2.43896484375 },
+            });
+            directionsDisplay.setMap(map);
+            directionsService.route({
+                origin: sessionStorage.getItem('start'),
+                destination: sessionStorage.getItem('end'),
+                travelMode: 'DRIVING'
+            }, function (response, status) {
+                if (status === 'OK') {
+                    directionsDisplay.setDirections(response);
+                } //else {
+                    //window.alert('Directions request failed due to ' + status);
+                //}
+            });
+        }
+
+        var generateRandomString = function (length) {
+            var text = '';
+            var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+            for (var i = 0; i < length; i++) {
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            return text;
+        };
+
+        var state = generateRandomString(16);
+        var stateKey = 'spotify_auth_state';
+        //res.cookie(stateKey, state);
+        document.cookie = stateKey + state;
+
+        $('#login').click(function () {
+            // your application requests authorization
+            var scope = 'user-read-private user-read-email playlist-read-private playlist-modify-private playlist-modify-public';
+
+            $.ajax({
+                url: 'https://accounts.spotify.com/authorize?',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    response_type: 'code',
+                    client_id: '8b367f6e30cb41858bf52c19c39bd54a',
+                    scope: scope,
+                    redirect_uri: 'http://localhost:4400/accueil.html',
+                    state: state
+                },
+                success: function (data) {
+                    console.log(data.BON[2])
+                    console.log(data.query)
+                    sessionStorage.setItem('code', data.BON[2])
+
+                    //$.ajax({
+                    //    url: 'https://accounts.spotify.com/api/token',
+                    //    type: 'POST',
+                    //    headers: {
+                    //        'Authorization': 'Basic 8b367f6e30cb41858bf52c19c39bd54a:2678b87fde1641eaac3c6f2d7458ec46'
+                    //    },
+                    //    json: true,
+                    //    data: {
+                    //        code: sessionStorage.getItem('code'),
+                    //        redirect_uri: 'http://localhost:4400/accueil.html',
+                    //        grant_type: 'authorization_code'
+                    //    },
+                    //    success: function (data) {
+                    //        console.log(data)
+                    //    }
+                    //})
+
+                },
+
+                error: function (resultat, statut, erreur) {
+                    console.log("Erreur !" + erreur);
+                }
+            });  
+
+            //window.open("https://accounts.spotify.com/authorize?" +
+            //    querystring.stringify({
+            //        response_type: 'code',
+            //        client_id: '8b367f6e30cb41858bf52c19c39bd54a',
+            //        scope: scope,
+            //        redirect_uri: 'http://localhost:4400/accueil',
+            //        state: state
+            //    }))
+        })
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrvc135P6W5lV0mNykc7S4-1IOWzCCjac&callback=initMap&libraries=places" async defer></script>
+</body>
+</html>

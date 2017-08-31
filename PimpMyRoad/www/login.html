@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+    <!--
+        Personnalisez la stratégie de sécurité de contenu dans la balise meta ci-dessous selon vos besoins. Ajoutez 'unsafe-inline' à default-src pour activer JavaScript directement dans les lignes.
+        Pour obtenir des détails, consultez http://go.microsoft.com/fwlink/?LinkID=617521
+    
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">-->
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+		<link type="text/css" rel='stylesheet' href='css/stylePageLogin.css' />
+		<link type="text/css" rel='stylesheet' href='css/stylePageCreationLogin.css' />
+        <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+        <title>PimpMyRoad</title>
+    </head>
+<body>
+    <div class="row" style="text-align: center;">
+        <img alt="Brand" src="images/logo.png">
+    </div>
+
+    <div class="wrapper">
+        <div class="connexion-form-signin" style="margin-top: 4em;">
+            <!--<h3 class="connexion-form-signin-heading imp">Connexion</h3>-->
+            <input type="text" class="form-control" id="mail" name="username" placeholder="Adresse mail ou identifiant" required="" autofocus="" />
+            <br />
+            <input type="password" class="form-control" id="mdp" name="password" placeholder="Mots de passe" required="" />
+            <br />
+            <button class="btn btn-lg btn-block" type="submit" id="btnConnect" style="background-color: #50EF94; color: white;">Envoyer</button>
+            <div class="row">
+                <a class='lienCreationCompte' id="btnIns"> Inscription </a>
+            </div>
+            <div class="row" style="margin-top: 2em; text-align: center;">
+                <h5 id="error" style="color: red; font-weight: bold; display: none;"></h5>
+            </div>
+        </div>
+    </div>
+    
+    <div class="wrapper2">
+        <div class="connexion-form-signin">
+            <input type="text" class="form-control" name="username" id="cname" placeholder="Identifiant" required="" autofocus="" />
+            <br />
+            <input type="text" class="form-control" name="email" id="cmail" placeholder="Adresse mail" required="" autofocus="" />
+            <br />
+            <input type="password" class="form-control" name="password" id="cpwd" placeholder="Mots de passe" required="" />
+            <br />
+            <input type="password" id='ccpwd' class="form-control" name="confirmationPassword" placeholder="Confirmation du mots de passe" required="" autofocus="" />
+            <div class="row" style="margin-top: 2em; text-align: center;">
+                <h5 id="error2" style="color: red; font-weight: bold; display: none;"></h5>
+            </div>
+            <button id='creationCompte' class="btn btn-lg btn-block" type="submit" style="background-color: #50EF94; color: white;">Envoyer</button>
+            <button id='btnAnnuler' class="btn btn-lg btn-danger btn-block">Annuler</button>
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="cordova.js"></script>
+    <!-- L'attribut 'async' est nécessaire pour permettre à RequireJS de fonctionner dans une application Windows -->
+    <script type="text/javascript" data-main="scripts/startup" src="lib/require.2.1.8.js" async></script>
+    <script type="text/javascript" src="scripts/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+        var globalURL = "http://192.168.33.10/api/";
+        sessionStorage.setItem("url", globalURL);
+        sessionStorage.setItem("trajet", "0");
+        sessionStorage.setItem('start', "");
+        sessionStorage.setItem('end', "");
+        $('#mail').val(sessionStorage.getItem('username'));
+
+        $('.wrapper').css('display', 'initial');
+        $('.wrapper2').css('display', 'none');
+
+        $('#btnAnnuler').click(function () {
+            $('.wrapper2').css('display', 'none');
+            $('#error2').css('display', 'none');
+            $('#error2').html("");
+            $('#cmail').val("");
+            $('#cname').val("");
+            $('#cpwd').val("");
+            $('#ccpwd').val("");
+            $('.wrapper').css('display', 'initial');
+        });
+
+        $('#btnIns').click(function () {
+            $('.wrapper').css('display', 'none');
+            $('#error').css('display', 'none');
+            $('#error').html("");
+            $('#mdp').val("");
+            $('#mail').val("");
+            $('.wrapper2').css('display', 'initial');
+        });
+
+        $('#btnConnect').click(function () {
+            $('#error').css('display', 'none');
+            $('#error').html("");
+            if ($("#mail").val() != "" || $("#mdp").val() != "") {
+                $.ajax({
+                    url: sessionStorage.getItem("url") + 'login_check',
+                    type: 'POST',
+                    data: { _username: $('#mail').val(), _password: $('#mdp').val() },
+                    success: function (data) {
+                        if (data.token != "") {
+                            sessionStorage.setItem('token', data.token)
+                            window.open("accueil.html") 
+                        }
+                    },
+
+                    error: function (resultat, statut, erreur) {
+                        $('#error').html("Le nom d'utilisateur et/ou le mot de passe est incorrect !");
+                        $('#error').css('display', 'initial');
+                    }
+                });
+            } else {
+                alert("NULL") // Regex mail et mdp
+            }
+        });
+
+        function validateEmail(email) {
+            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
+        }
+
+        function validate(pmail) {
+            if (validateEmail(pmail)) {
+                return true
+            } else {
+                return false;
+            }
+        }
+
+        function validatePassword() {
+            var str = $('#cpwd').val();
+            if (str.length < 6) {
+                $('#error2').html("Le mot de passe doit contenir minimum 8 caractères !");
+                $('#error2').css('display', 'initial');
+                return false;
+            } else if (str.length > 50) {
+                $('#error2').html("Le mot de passe ne doit pas dépasser 50 caractères !");
+                $('#error2').css('display', 'initial');
+                return false;
+            } else if (str.search(/\d/) == -1) {
+                $('#error2').html("Le mot de passe doit contenir minimum 1 chiffre !");
+                $('#error2').css('display', 'initial');
+                return false;
+            } else if (str.search(/[a-zA-Z]/) == -1) {
+                $('#error2').html("Le mot de passe doit contenir minimum 1 lettre !");
+                $('#error2').css('display', 'initial');
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        $('#creationCompte').click(function () {
+            $('#error2').html("");
+            $('#error2').css('display', 'none');
+            if ($('#cname').val() == "") {
+                $('#error2').html("Le nom d'utilisateur ne peut pas être vide. Veuillez saisir un nom d'utilisateur !");
+                $('#error2').css('display', 'initial');
+            } else if ($("#cmail").val() == "") {
+                $('#error2').html("Veuillez saisir une adresse mail valide !");
+                $('#error2').css('display', 'initial');
+            } else if ($('#cpwd').val() != $('#ccpwd').val()) {
+                $('#error2').html("Les mots de passe ne sont pas les mêmes !");
+                $('#error2').css('display', 'initial');
+            } else if (validate($('#cmail').val()) == false) {
+                $('#error2').html("L'email saisie n'est pas correcte !");
+                $('#error2').css('display', 'initial');
+            } else if (validatePassword() == false) {
+
+            } else {
+                $.ajax({
+                    url: sessionStorage.getItem("url") + 'register',
+                    type: 'POST',
+                    data: { username: $('#cname').val(), password: $('#cpwd').val(), email: $('#cmail').val() },
+                    success: function (data) {
+                        console.log("ok")
+                        console.log(data)
+                        sessionStorage.setItem('username', $('#cname').val());
+                        $('#mail').val(sessionStorage.getItem('username'));
+                        $('.wrapper2').css('display', 'none');
+                        $('.wrapper').css('display', 'initial');
+                        //window.open("accueil.html") 
+                    },
+
+                    error: function (resultat, statut, erreur) {
+                        console.log("erreur");
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
